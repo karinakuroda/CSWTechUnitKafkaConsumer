@@ -1,11 +1,12 @@
 ﻿using Confluent.Kafka;
+using ConsumerCSW;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 
-namespace ConsumerCSW
+namespace ConsumerEurope
 {
     class Program
     {
@@ -13,7 +14,7 @@ namespace ConsumerCSW
         {
             var conf = new ConsumerConfig
             {
-                GroupId = "consumer-group-all",
+                GroupId = "consumer-group-europe",
                 BootstrapServers = "localhost:9092",
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
@@ -21,11 +22,9 @@ namespace ConsumerCSW
             using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
             {
                 var topics = new List<string>();
-                topics.Add("csw-topic");
                 topics.Add("csw-topic-portugal");
                 topics.Add("csw-topic-espanha");
                 c.Subscribe(topics);
-                
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Console.CancelKeyPress += (_, e) => {
                     e.Cancel = true; // prevent the process from terminating.
@@ -48,6 +47,9 @@ namespace ConsumerCSW
                                 object value = descriptor.GetValue(order);
                                 Console.WriteLine("{0}={1}", name, value);
                             }
+
+
+
                         }
                         catch (ConsumeException e)
                         {
