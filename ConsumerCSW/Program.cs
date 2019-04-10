@@ -11,23 +11,20 @@ namespace ConsumerCSW
     {
         public static void Main(string[] args)
         {
-            var conf = new ConsumerConfig
-            {
-                GroupId = "consumer-group-all",
-                BootstrapServers = "localhost:9092",
-                AutoOffsetReset = AutoOffsetReset.Earliest
-            };
-
+            Console.WriteLine("Type the option:");
+            Console.WriteLine("1 - Run GroupId consumer-group-all");
+            Console.WriteLine("2 - Run GroupId consumer-group-europe");
+            var opt = Console.ReadLine();
+            
+            var conf = GetConfigConsumerGroup(opt);
+            
             using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
             {
-                var topics = new List<string>();
-                topics.Add("csw-topic");
-                topics.Add("csw-topic-portugal");
-                topics.Add("csw-topic-espanha");
-                c.Subscribe(topics);
-                
+                c.Subscribe(GetTopicsConsumerGroup(opt));
+
                 CancellationTokenSource cts = new CancellationTokenSource();
-                Console.CancelKeyPress += (_, e) => {
+                Console.CancelKeyPress += (_, e) =>
+                {
                     e.Cancel = true; // prevent the process from terminating.
                     cts.Cancel();
                 };
@@ -60,6 +57,51 @@ namespace ConsumerCSW
                     c.Close();
                 }
             }
+        }
+
+        private static ConsumerConfig GetConfigConsumerGroup(string opt)
+        {
+            string groupId = string.Empty;
+
+            switch (opt)
+            {
+                case "1":
+                    groupId = "consumer-group-all";
+                    break;
+                case "2":
+                    groupId = "consumer-group-europe";
+                    break;
+                default:
+                    break;
+            }
+
+            var conf = new ConsumerConfig
+            {
+                GroupId = groupId,
+                BootstrapServers = "localhost:9092",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
+
+            return conf;
+        }
+
+        private static List<string> GetTopicsConsumerGroup(string opt)
+        {
+            var topics = new List<string>();
+
+            if (opt == "1")
+            {
+                topics.Add("csw-topic");
+                topics.Add("csw-topic-portugal");
+                topics.Add("csw-topic-espanha");
+            }
+            else
+            {
+                topics.Add("csw-topic-portugal");
+                topics.Add("csw-topic-espanha");
+            }
+
+            return topics;
         }
     }
 }

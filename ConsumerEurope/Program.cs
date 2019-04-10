@@ -19,6 +19,7 @@ namespace ConsumerEurope
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
+            Console.WriteLine($"GroupId={conf.GroupId}");
             using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
             {
                 var topics = new List<string>();
@@ -47,9 +48,6 @@ namespace ConsumerEurope
                                 object value = descriptor.GetValue(order);
                                 Console.WriteLine("{0}={1}", name, value);
                             }
-
-
-
                         }
                         catch (ConsumeException e)
                         {
