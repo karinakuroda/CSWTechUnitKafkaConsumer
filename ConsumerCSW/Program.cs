@@ -14,6 +14,7 @@ namespace ConsumerCSW
             Console.WriteLine("Type the option:");
             Console.WriteLine("1 - Run GroupId consumer-group-all");
             Console.WriteLine("2 - Run GroupId consumer-group-europe");
+            Console.WriteLine("3 - Run GroupId consumer-group-europe-test");
             var opt = Console.ReadLine();
             
             var conf = GetConfigConsumerGroup(opt);
@@ -70,6 +71,9 @@ namespace ConsumerCSW
                     break;
                 case "2":
                     groupId = "consumer-group-europe";
+                    break;
+                case "3":
+                    groupId = "consumer-group-europe-test";
                     break;
                 default:
                     break;
